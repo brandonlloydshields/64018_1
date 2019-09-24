@@ -21,8 +21,8 @@ add.constraint(lprec, c(0,0,20,0,0,15,0,0,12), "<=",5000)
 add.constraint(lprec, c(1,1,1,0,0,0,0,0,0), "<=",900)
 add.constraint(lprec, c(0,0,0,1,1,1,0,0,0), "<=",1200)
 add.constraint(lprec, c(0,0,0,0,0,0,1,1,1), "<=",750)
-add.constraint(lprec, c((1/750),(-1/900),0,(1/750),(-1/900),0,(1/750),(-1/900),0), "=",0)
-add.constraint(lprec, c(0,(1/900),(-1/450),0,(1/900),(-1/450),0,(1/900),(-1/450)), "=",0)
+add.constraint(lprec, c(900,-750,0,900,-750,0,900,-750,0), "=",0)
+add.constraint(lprec, c(0,1,-2,0,1,-2,0,1,-2), "=",0)
 
 #nonnegativity
 
