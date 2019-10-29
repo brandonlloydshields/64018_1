@@ -1,0 +1,103 @@
+---
+title: "Bshield6_8"
+author: "Brandon Lloyd Shields"
+date: "10/22/2019"
+output: html_document
+---
+
+```{r}
+library(lpSolveAPI)
+library(Benchmarking)
+```
+
+```{r}
+x <- matrix(c(150,400,320,520,350,320,200,700,1200,2000,1200,700), ncol = 2)
+y <- matrix(c(14000,14000,42000,28000,19000,14000, 3500, 21000,10500, 42000, 25000,15000),ncol = 2)
+colnames(y) <- c("Reimbursed P-Days","Private Paid P-Days")
+colnames(x) <- c("Staff Hours per Day", "Supplies per Day")
+x
+y
+```
+
+```{r}
+#FDH Assumption
+
+fdh <- dea(x,y,RTS = "fdh")            # provide the input and output 
+fdh
+peers(fdh)                             # identify the peers
+lambda(fdh)                            # identify the relative weights given to the peers
+dea.plot.isoquant(x,y,RTS="fdh")     # plot the results
+
+```
+
+```{r}
+#CRS Assumption
+
+crs <- dea(x,y,RTS = "crs")            # provide the input and output 
+crs
+peers(crs)                             # identify the peers
+lambda(crs)                            # identify the relative weights given to the peers
+dea.plot.isoquant(x,y,RTS="crs")     # plot the results
+
+#e shows efficiency. In the case below firm 5 is only 92% effiecnt and firm 6 is 86.75% efficient. 
+
+#peers shows the peer facilties that will be used to determine the HCU from the DMU. Below both Facilty 5 and Facility  6 have peers of 1, 2 and 4
+
+# Lambda shows the weights for the peers applied to all inputs and otputs in order to achieve the HCU that reaches maximum effiecincy. For example, the HCU will be calculated by multiplying inputs and outputs by of .2 for facilty 1, .08 for facility 2, and .53 for facilty four and then ading them together. Rememebr that ratio of input to output  is maintained, but quanity is changing to achieve efficiency
+```
+
+```{r}
+#VRS Assumption
+
+vrs <- dea(x,y,RTS = "vrs")            # provide the input and output 
+vrs
+peers(vrs)                             # identify the peers
+lambda(vrs)                            # identify the relative weights given to the peers
+dea.plot.isoquant(x,y,RTS="vrs")     # plot the results
+```
+
+```{r}
+#IRS Assumption
+
+irs <- dea(x,y,RTS = "irs")            # provide the input and output 
+irs
+peers(irs)                             # identify the peers
+lambda(irs)                            # identify the relative weights given to the peers
+dea.plot.isoquant(x,y,RTS="irs")     # plot the results
+```
+
+```{r}
+#DRS Assumption
+
+drs <- dea(x,y,RTS = "drs")            # provide the input and output 
+drs
+peers(drs)                             # identify the peers
+lambda(drs)                            # identify the relative weights given to the peers
+dea.plot.isoquant(x,y,RTS="drs")     # plot the results
+```
+
+```{r}
+# FRH Assumption
+
+frh <- dea(x,y,RTS = "add")            # provide the input and output 
+frh
+peers(frh)                             # identify the peers
+lambda(frh)                            # identify the relative weights given to the peers
+    # plot the results
+```
+
+```{r}
+facility <- (1:6)
+facility
+
+Facilty_Efficiency <- data.frame("Facility" = facility, "FDH" = c(1,1,1,1,1,1), "CRS" = c(1,1,1,1,.9775,.8675), "VRS" = c(1,1,1,1,1,.8963), "IRS" = c(1,1,1,1,1,.8963), "DRS" = c(1,1,1,1,.9775,.8675), "FRH" = c(1,1,1,1,1,1))
+
+Facilty_Efficiency
+
+#The table below shows how different models indicate different relative efficiencies for facilites 1,2,3,4,5, and 6. According to my work, facilities 1-4 are efficent regardless of what model is applied. However, this is no true for facilties 5 and 6.Facility 5 is efficient under FDH, VRS, IRS and FRH, but not according to CRS and DRS. Facilty 6 is efficient according to even fewer models, only FDH and FRH. It is not efficent under models CRS, VRS, IRS and DRS. 
+```
+
+```{r}
+
+```
+
