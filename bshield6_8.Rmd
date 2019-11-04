@@ -1,0 +1,56 @@
+---
+title: "bshield6_8"
+author: "Brandon Lloyd Shields"
+date: "11/2/2019"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r}
+# Question 1
+
+# Amount over employment goal = -6y1p
+# Amount under employment goall = -6y1m
+
+# Amount over earnings goal = 0y2p
+# Amount under earnings goal = -3y2m
+
+# where y1p; y1m; y2p; y2m >= 0
+
+# Product 1 = x1
+# Product 2 = x2
+# Product 3 = x3
+
+# P = 20x1 + 15x2 + 25x3
+
+# 6x1 + 4x2 + 5x3 - 50 = (y1p - y1m)
+# 6x1 + 4x2 + 5x3 - y1p + y1m = 50
+
+# 8x1 + 7x2 + 5x3 - 75 = (y2p - y2m)
+# 8x1 + 7x2 + 5x3 - y2p + y2m = 75
+
+#Question 2
+
+# Max Z: 20x1 + 15x2 + 25x3 - 6y1p - 6y1m - 3y2m + 0y2p;
+
+
+```
+
+
+```{r}
+library(lpSolveAPI)
+goalp <- read.lp("module9.lp")
+goalp
+
+```
+
+```{r}
+solve(goalp)
+get.objective(goalp)
+get.variables(goalp)
+
+# The ouput here implies that all goals were satisfied expect for that employment exceeded 50 by 25. This led to a penalty of 150 (125 x 6). Here the inly product produced is x3 with 15 units of product 3.
+```
+```
+
