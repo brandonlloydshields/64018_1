@@ -1,0 +1,132 @@
+---
+title: "bshield6_10"
+author: "Brandon Lloyd Shields"
+date: "11/29/2019"
+output:
+  html_document: default
+  pdf_document: default
+---
+```{r}
+library(GA)
+library(GenSA)
+```
+
+```{r}
+Model <- mtcars
+
+Model_20 = Model[1:20,]
+
+summary(Model_20)
+
+#Model will be the weight is a predictor of mpg
+
+Regression <- lm(mpg ~ wt, data = Model_20)
+summary(Regression)
+
+#Here the intercept is 38.5170 and the coefficient for wt is -5.4104
+
+```
+
+```{r}
+OLS <- function(data, b0, b1) {
+  
+  attach(data, warn.conflicts = F)
+  
+  Y_hat <- b0 +b1*wt
+  
+  SSE = t(mpg-Y_hat) %*% (mpg-Y_hat)
+  
+  detach(data)
+  
+  return(SSE)
+}
+
+ga.OLS <- ga(type = "real-valued", popSize = 500, maxiter = 100, min=c(-100,-100), 
+             max=c(100, 100), names = c("intercept", "weight"), keepBest=T, fitness = function(b) -OLS(Model_20, b[1],b[2]))
+
+ga.model <- summary(ga.OLS)
+ga.model
+
+plot(ga.OLS)
+
+#We can see that the Genetic Algorithm retunrs b0 and b1 values that are very close to the optimal solution ran via linear regression model.
+
+#Linear Regression intercept: 38.5170
+#GA Intercept: 38.4944
+
+#Linear Regression b1:-5.4104
+#GA b1: -5.4054
+
+
+```
+
+```{r}
+
+x <- 0:15
+optimal <- 38.5170 + (-5.4104*x)
+
+plot(Regression$fitted.values, xlab = "Weight", ylab = "mpg", main = "Weight as a Predictor for MPG")
+
+lines(optimal, col = "red")
+
+plot(optimal)
+#lines(Regression$fitted.values, optimal)
+#plot(optimal,type = "l", col = "red")
+```
+
+
+
+```{r}
+#Simulated Annealing
+
+# After multiple attempts, I was unable to get the "fn" argument of the GenSA function to accept my OLS function. Below you can see the multiple attempts and variations made in order to try and yield a usable result. In lieu of results, I will provide a written explanation of what should have occured. Here the simulated annealing function would be looking for a combination of b0 and b1 that minimizes SSE. It would do this in conjunction with a temperature value that would be initially set high. UWith high values, the function would be more likley to accept "worse" solutions (when SSE is not decreased). Sowly the temperature is raised and the likihood of accepting worse solutions decreases.This process of annealing helps decrease the probablility of getting stuck in a local minimum rather than finding a global minimum. If I could have got the function to work appropriatley, I would expect b0 and b1 close to that of the optimal solution found using linear regression techniques.
+
+out <- GenSA(lower = c(-100), upper = c(100), fn=function(b) -OLS(Model_20, b[1],b[2]))
+
+out[c("value","par","counts")]
+```
+
+```{r}
+out <- GenSA(lower = c(-100), upper = c(100), fn=function(b) -OLS(Model_20))
+
+out[c("value","par","counts")]
+```
+
+```{r}
+out <- GenSA(lower = c(-100), upper = c(100), fn=OLS(Model_20,b[1],b[2]))
+
+out[c("value","par","counts")]
+```
+
+```{r}
+out <- GenSA(lower = c(-100), upper = c(100), fn=OLS)
+
+out[c("value","par","counts")]
+```
+
+
+```{r}
+OLS.2 <- function(data) {
+  
+  
+  Y_hat <- b0 +b1*wt
+  
+  SSE = t(mpg-Y_hat) %*% (mpg-Y_hat)
+  
+  
+  return(SSE)
+}
+```
+
+```{r}
+out <- GenSA(lower = c(-100), upper = c(100), fn=OLS.2)
+
+out[c("value","par","counts")]
+```
+
+```{r}
+out <- GenSA(lower = c(-100), upper = c(100), fn=function(b) -OLS.2(Model_20,b[1],b[2]))
+
+out[c("value","par","counts")]
+```
+
