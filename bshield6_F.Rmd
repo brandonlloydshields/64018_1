@@ -1,0 +1,70 @@
+---
+title: "bshield6_F"
+author: "Brandon Lloyd Shields"
+date: "12/4/2019"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r}
+#For this project I assumed that groups were being formed for a class in the MSBA progam. I determined that the three most important factors for the success of the group include: current mastery of MSBA coursework, relevancy of academic background, and a students motiviation to apply the aforementioned knowledge. 
+
+#Current Mastery of MSBA coursework would be measured via their GPA in the MSBA program and could be collected via Institutional Research. Revelancy would be measured via their undergraduate degree. This information can be collected from the graduate admissions office. Standrd reporting to ranking agencies requires undegraduate degrees to be categorized as either Business, Technology (STEM non-Business, or Other). Applied point values will be used that uderscore its relevancy to success in the MSBA. Here Tech = .5, Business = .35 and Other = .15. Finally, motivation would be measured via a survey given to students as the start of the class. This survey would index responses to questions like "What grade do you expect to get from this course" and "How many hours a week to you plan to spend on the course". Students would recieve a Motivation score between 1 and 10, where 10 is highly motivated. 
+
+#A combined score would be developed using all three measures. Here G.P.A would be standardized by dividing the G.P.A. by four and motivation would be standardized by dividing by 10. A wighted average would than be taken, where weights are applied relative to thier importance to success. G.P.A has a weight of .5, Motivation .3 and undergraduate major .2. The data frame used can be seen below.
+```
+
+
+```{r}
+library(dplyr)
+
+Data <- data.frame("Student_Name" = c(1:12), "GPA" = c(3.78, 3.81,3.08, 3.97, 3.55, 3.07, 3.92, 3.63, 3.59, 3.81, 3.05, 3.85), "Major" = c("Tech", "Tech", "Other", "Other", "Business", "Tech", "Tech", "Business", "Business", "Business", "Business", "Other"), "Major_Point" = c(.5,.5,.15,.15,.35,.5,.5,.35,.35,.35,.35,.15), "Motivation" = c(10,5,10,5,10,6,7,7,6,5,9,10))
+
+Data_Coeff <- mutate(Data, "coeff" = (((GPA/4)*.5) + ((Motivation/10)*.3) + (Major_Point *.2)))
+
+View(Data_Coeff)
+```
+
+```{r}
+#Constraints
+
+#Constraints for group size (three students per group) and students only being assigned to one team are required in order for the application of the problem to make sense. Additional constraints were used in order to try and maximize the potential for success for each team. 
+
+#Motivation - In order to ensure that each group has high level of motivation, a constraint was added that each team must have a sum total of 21 of their motivation score. (70% of the maximum value of 30 per team, or an average of 7)
+
+#Undergaduate Degree Type: Because Technology degrees are the most valuable in terms of gauging success (awarded value of .5) and Other is the least valuable (awarded a value of .15), constraints were added to ensure that any group did not have all Technology degree students or all Other degree students.
+
+#G.P.A: In order to attempt a fair distrubtion of knowledge in MSBA related topics, every group had to have a combined G.P.A greater than or equal 10.5 (or a 3.5 average G.P.A.)
+
+#Combined Score: Finally, each group had to have a combined score greater than or equal to 2.23. This was based on the data which indicated that the average combined score for the group was .74 (.74* 3 = 2.23)
+
+
+```
+
+
+
+
+```{r}
+library(lpSolveAPI)
+
+x <- read.lp("bshield6_F.lp")
+
+solve(x)
+
+get.objective(x)
+
+get.variables(x)
+
+#Optimal Groups based on output below:
+
+#Group1:Student 1, Student 4, Student 6
+#Group2:Student 3, Student 9, Student 12
+#Group3:Student 2, Student 7, Student 11
+#Group4:Student 5, Student 8, Student 10
+```
+
+
+
+```
+
